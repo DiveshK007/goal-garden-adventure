@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Brain, RefreshCw, Award, Clock, Info } from "lucide-react";
+import { Brain, RefreshCw, Award, Clock, Info, Check } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
 import { useReward } from "@/contexts/RewardContext";
 import { Button } from "@/components/ui/button";
@@ -14,8 +13,7 @@ import { useToast } from "@/components/ui/use-toast";
 const facts = [
   "Taking deep breaths lowers stress hormone levels and blood pressure.",
   "Studies show that just 5 minutes of outdoor activity can improve your mood.",
-  "Listening to music can reduce anxiety by up to
-  65%.",
+  "Listening to music can reduce anxiety by up to 65%.",
   "The brain can't actually multitask efficiently - focusing on one task at a time is more effective.",
   "Regular breaks during study sessions improve information retention.",
   "A 20-minute power nap can boost alertness by 54%.",
@@ -265,6 +263,38 @@ const MemoryGame = ({ onComplete }: MemoryGameProps) => {
     </div>
   );
 };
+
+interface ActivityCardProps {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  completed?: boolean;
+  onClick: () => void;
+  disabled?: boolean;
+}
+
+const ActivityCard = ({ title, description, icon, completed, onClick, disabled }: ActivityCardProps) => (
+  <div 
+    className={`p-4 border rounded-lg cursor-pointer transition-all ${
+      disabled ? "opacity-60" : completed ? "border-garden-green bg-garden-green bg-opacity-5" : "hover:border-garden-purple hover:shadow-sm"
+    }`}
+    onClick={disabled ? undefined : onClick}
+  >
+    <div className="flex justify-between items-start">
+      <div className="flex items-center gap-3">
+        <div className={`p-2 rounded-full ${completed ? "bg-garden-green text-white" : "bg-garden-light"}`}>
+          {icon}
+        </div>
+        <div>
+          <h3 className="font-medium flex items-center gap-2">
+            {title} {completed && <Check size={16} className="text-garden-green" />}
+          </h3>
+          <p className="text-sm text-gray-500 mt-1">{description}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 const Destress = () => {
   const { addPoints } = useReward();
@@ -521,37 +551,5 @@ const Destress = () => {
     </MainLayout>
   );
 };
-
-interface ActivityCardProps {
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  completed?: boolean;
-  onClick: () => void;
-  disabled?: boolean;
-}
-
-const ActivityCard = ({ title, description, icon, completed, onClick, disabled }: ActivityCardProps) => (
-  <div 
-    className={`p-4 border rounded-lg cursor-pointer transition-all ${
-      disabled ? "opacity-60" : completed ? "border-garden-green bg-garden-green bg-opacity-5" : "hover:border-garden-purple hover:shadow-sm"
-    }`}
-    onClick={disabled ? undefined : onClick}
-  >
-    <div className="flex justify-between items-start">
-      <div className="flex items-center gap-3">
-        <div className={`p-2 rounded-full ${completed ? "bg-garden-green text-white" : "bg-garden-light"}`}>
-          {icon}
-        </div>
-        <div>
-          <h3 className="font-medium flex items-center gap-2">
-            {title} {completed && <Check size={16} className="text-garden-green" />}
-          </h3>
-          <p className="text-sm text-gray-500 mt-1">{description}</p>
-        </div>
-      </div>
-    </div>
-  </div>
-);
 
 export default Destress;
