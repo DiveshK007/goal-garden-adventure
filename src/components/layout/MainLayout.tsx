@@ -2,10 +2,10 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Bell, Calendar, Award, BarChart, Brain, User, Menu, X } from "lucide-react";
+import { Bell, Calendar, Award, BarChart, Brain, User, Menu, X, Gamepad } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface NavItemProps {
   to: string;
@@ -44,6 +44,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     { to: "/analytics", icon: <BarChart size={20} />, label: "Analytics" },
     { to: "/rewards", icon: <Award size={20} />, label: "Rewards" },
     { to: "/destress", icon: <Brain size={20} />, label: "Destress" },
+    { to: "/minigames", icon: <Gamepad size={20} />, label: "Mini Games" },
     { to: "/chat", icon: <User size={20} />, label: "AI Buddy" },
   ];
 

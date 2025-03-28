@@ -13,6 +13,7 @@ import Analytics from "./pages/Analytics";
 import Rewards from "./pages/Rewards";
 import Destress from "./pages/Destress";
 import Chat from "./pages/Chat";
+import MiniGames from "./pages/MiniGames";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
               <Route path="/rewards" element={<Rewards />} />
               <Route path="/destress" element={<Destress />} />
               <Route path="/chat" element={<Chat />} />
+              <Route path="/minigames" element={<MiniGames />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

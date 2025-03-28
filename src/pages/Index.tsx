@@ -6,6 +6,7 @@ import { Plus, Calendar, Clock } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
 import { TaskList } from "@/components/tasks/TaskList";
 import { AddTaskForm } from "@/components/tasks/AddTaskForm";
+import { DailyQuests } from "@/components/quests/DailyQuests";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -56,58 +57,66 @@ const TasksPage = () => {
           </Sheet>
         </div>
         
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Tabs defaultValue="upcoming" className="w-full">
-            <TabsList className="mb-6">
-              <TabsTrigger value="upcoming" className="flex gap-2">
-                <Clock size={16} />
-                <span>Upcoming</span>
-              </TabsTrigger>
-              <TabsTrigger value="all" className="flex gap-2">
-                <Calendar size={16} />
-                <span>All Tasks</span>
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="upcoming" className="space-y-6">
-              <div className="space-y-6">
-                <TaskList 
-                  title="Today" 
-                  tasks={todayTasks} 
-                  emptyMessage="No tasks due today" 
-                />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div className="md:col-span-2">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Tabs defaultValue="upcoming" className="w-full">
+                <TabsList className="mb-6">
+                  <TabsTrigger value="upcoming" className="flex gap-2">
+                    <Clock size={16} />
+                    <span>Upcoming</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="all" className="flex gap-2">
+                    <Calendar size={16} />
+                    <span>All Tasks</span>
+                  </TabsTrigger>
+                </TabsList>
                 
-                <TaskList 
-                  title="This Week" 
-                  tasks={weekTasks.filter(task => 
-                    !todayTasks.find(t => t.id === task.id)
-                  )} 
-                  emptyMessage="No tasks due this week" 
-                />
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="all" className="space-y-6">
-              <div className="space-y-6">
-                <TaskList 
-                  title="Pending Tasks" 
-                  tasks={pendingTasks} 
-                  emptyMessage="No pending tasks" 
-                />
+                <TabsContent value="upcoming" className="space-y-6">
+                  <div className="space-y-6">
+                    <TaskList 
+                      title="Today" 
+                      tasks={todayTasks} 
+                      emptyMessage="No tasks due today" 
+                    />
+                    
+                    <TaskList 
+                      title="This Week" 
+                      tasks={weekTasks.filter(task => 
+                        !todayTasks.find(t => t.id === task.id)
+                      )} 
+                      emptyMessage="No tasks due this week" 
+                    />
+                  </div>
+                </TabsContent>
                 
-                <TaskList 
-                  title="Completed Tasks" 
-                  tasks={completedTasks.slice(0, 5)} 
-                  emptyMessage="No completed tasks" 
-                />
-              </div>
-            </TabsContent>
-          </Tabs>
-        </motion.div>
+                <TabsContent value="all" className="space-y-6">
+                  <div className="space-y-6">
+                    <TaskList 
+                      title="Pending Tasks" 
+                      tasks={pendingTasks} 
+                      emptyMessage="No pending tasks" 
+                    />
+                    
+                    <TaskList 
+                      title="Completed Tasks" 
+                      tasks={completedTasks.slice(0, 5)} 
+                      emptyMessage="No completed tasks" 
+                    />
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </motion.div>
+          </div>
+          
+          <div>
+            <DailyQuests />
+          </div>
+        </div>
       </div>
     </MainLayout>
   );

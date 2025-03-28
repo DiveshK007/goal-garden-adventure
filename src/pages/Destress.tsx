@@ -312,7 +312,7 @@ const Destress = () => {
   
   // Timer logic
   useEffect(() => {
-    let interval: number | undefined;
+    let interval: ReturnType<typeof setInterval> | undefined;
     
     if (isTimerActive && timeLeft > 0) {
       interval = setInterval(() => {
@@ -342,7 +342,7 @@ const Destress = () => {
     setActiveActivity(null);
     if (!completedActivities.includes(activity)) {
       setCompletedActivities(prev => [...prev, activity]);
-      addPoints(15, `Completed ${activity}`);
+      addPoints(15);
       toast({
         title: "Activity Completed!",
         description: `You earned 15 points for completing ${activity}.`,
@@ -352,7 +352,7 @@ const Destress = () => {
   
   const handleQuestComplete = () => {
     if (completedActivities.length >= 2) {
-      addPoints(25, "Completed 5-minute destress quest");
+      addPoints(25);
       toast({
         title: "Destress Quest Completed!",
         description: "You earned 25 bonus points for completing the quest!",

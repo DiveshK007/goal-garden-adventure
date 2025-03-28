@@ -1,58 +1,101 @@
 
-import { useState } from "react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { BarChart2, PieChart, Calendar, Trophy, Code, GraduationCap } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  Legend,
+} from "recharts";
 import MainLayout from "@/components/layout/MainLayout";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTask } from "@/contexts/TaskContext";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+
+// Sample data for charts
+const completionByDay = [
+  { name: "Mon", completed: 4, total: 7 },
+  { name: "Tue", completed: 3, total: 5 },
+  { name: "Wed", completed: 5, total: 6 },
+  { name: "Thu", completed: 2, total: 8 },
+  { name: "Fri", completed: 6, total: 9 },
+  { name: "Sat", completed: 3, total: 4 },
+  { name: "Sun", completed: 1, total: 2 },
+];
+
+const categoryCompletion = [
+  { name: "Homework", completed: 12, total: 15 },
+  { name: "Exam", completed: 5, total: 7 },
+  { name: "Reading", completed: 8, total: 10 },
+  { name: "Project", completed: 3, total: 6 },
+  { name: "Other", completed: 4, total: 5 },
+];
+
+const studyTimeData = [
+  { date: "Week 1", hours: 15 },
+  { date: "Week 2", hours: 20 },
+  { date: "Week 3", hours: 18 },
+  { date: "Week 4", hours: 25 },
+  { date: "Week 5", hours: 22 },
+  { date: "Week 6", hours: 30 },
+];
+
+const gradeData = [
+  { subject: "Math", grade: 92 },
+  { subject: "Science", grade: 88 },
+  { subject: "History", grade: 95 },
+  { subject: "English", grade: 90 },
+  { subject: "CS", grade: 97 },
+];
+
+const leetcodeProgressData = [
+  { month: "Jan", easy: 10, medium: 5, hard: 2 },
+  { month: "Feb", easy: 15, medium: 8, hard: 3 },
+  { month: "Mar", easy: 20, medium: 12, hard: 5 },
+  { month: "Apr", easy: 25, medium: 15, hard: 8 },
+  { month: "May", easy: 30, medium: 20, hard: 10 },
+];
+
+// Simulate CGPA calculation
+const calculateCGPA = (grades: number[]) => {
+  const sum = grades.reduce((acc, curr) => acc + curr, 0);
+  return (sum / grades.length / 10).toFixed(1);
+};
 
 const Analytics = () => {
-  const { tasks, getTasks } = useTask();
-  const completedTasks = getTasks({ completed: true });
-  const pendingTasks = getTasks({ completed: false });
+  const { tasks } = useTask();
+  const [activeTab, setActiveTab] = useState("productivity");
   
-  // Calculate statistics
+  // Calculate total tasks and completion rate
   const totalTasks = tasks.length;
-  const completionRate = totalTasks ? Math.round((completedTasks.length / totalTasks) * 100) : 0;
+  const completedTasks = tasks.filter((task) => task.completed).length;
+  const completionRate = totalTasks ? (completedTasks / totalTasks) * 100 : 0;
   
-  // Category distribution data
-  const categories = ['school', 'exam', 'homework', 'project', 'reading', 'other'];
-  const categoryData = categories.map(category => {
-    const tasksInCategory = tasks.filter(task => task.category === category);
-    const completedInCategory = tasksInCategory.filter(task => task.completed);
-    
-    return {
-      name: category.charAt(0).toUpperCase() + category.slice(1),
-      total: tasksInCategory.length,
-      completed: completedInCategory.length,
-    };
-  }).filter(item => item.total > 0);
+  // Calculate CGPA
+  const cgpa = calculateCGPA(gradeData.map(item => item.grade));
   
-  // Priority distribution data
-  const priorityData = [
-    { name: 'High', value: tasks.filter(task => task.priority === 'high').length },
-    { name: 'Medium', value: tasks.filter(task => task.priority === 'medium').length },
-    { name: 'Low', value: tasks.filter(task => task.priority === 'low').length },
-  ].filter(item => item.value > 0);
-  
-  const PRIORITY_COLORS = ['#ef4444', '#f59e0b', '#3b82f6'];
-  
-  // Calculate time management
-  const onTimeTasks = completedTasks.filter(task => {
-    const completedTime = new Date(); // In a real app, we'd store completion time
-    return completedTime <= task.dueDate;
-  }).length;
-  
-  const lateTasks = completedTasks.length - onTimeTasks;
-  
-  const timeManagementData = [
-    { name: 'On Time', value: onTimeTasks },
-    { name: 'Late', value: lateTasks },
-  ];
-  
-  const TIME_COLORS = ['#22c55e', '#ef4444'];
-  
+  // Count leetcode problems
+  const leetcodeSolved = leetcodeProgressData.reduce(
+    (acc, curr) => acc + curr.easy + curr.medium + curr.hard, 
+    0
+  );
+
   return (
     <MainLayout>
       <div className="max-w-6xl mx-auto">
@@ -62,232 +105,261 @@ const Analytics = () => {
           transition={{ duration: 0.3 }}
           className="mb-6"
         >
-          <h1 className="text-2xl font-bold">Academic Analytics</h1>
-          <p className="text-gray-500">Track your academic progress and performance</p>
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <BarChart2 className="text-garden-purple" /> Analytics Dashboard
+          </h1>
+          <p className="text-gray-500">
+            Track your progress, productivity, and academic performance
+          </p>
         </motion.div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatCard 
-            title="Total Tasks" 
-            value={totalTasks.toString()} 
-            description="Tasks created"
-            color="bg-blue-500" 
-          />
-          <StatCard 
-            title="Completion Rate" 
-            value={`${completionRate}%`} 
-            description="Tasks completed"
-            color="bg-green-500" 
-          />
-          <StatCard 
-            title="On Time" 
-            value={onTimeTasks.toString()} 
-            description="Tasks completed on time"
-            color="bg-purple-500" 
-          />
-          <StatCard 
-            title="Pending" 
-            value={pendingTasks.length.toString()} 
-            description="Tasks to be completed"
-            color="bg-amber-500" 
-          />
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-garden-green" />
+                Task Completion
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">
+                {completedTasks}/{totalTasks}
+              </div>
+              <Progress
+                value={completionRate}
+                className="h-2 mt-2 mb-1"
+              />
+              <p className="text-sm text-gray-500">
+                {completionRate.toFixed(0)}% completion rate
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <GraduationCap className="h-5 w-5 text-garden-purple" />
+                CGPA
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{cgpa}</div>
+              <Progress
+                value={Number(cgpa) * 10}
+                className="h-2 mt-2 mb-1"
+              />
+              <p className="text-sm text-gray-500">
+                Current academic standing
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Code className="h-5 w-5 text-garden-orange" />
+                LeetCode Solved
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{leetcodeSolved}</div>
+              <div className="flex gap-2 mt-2">
+                <div className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded">
+                  Easy: {leetcodeProgressData.reduce((acc, curr) => acc + curr.easy, 0)}
+                </div>
+                <div className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded">
+                  Medium: {leetcodeProgressData.reduce((acc, curr) => acc + curr.medium, 0)}
+                </div>
+                <div className="text-xs px-2 py-1 bg-red-100 text-red-800 rounded">
+                  Hard: {leetcodeProgressData.reduce((acc, curr) => acc + curr.hard, 0)}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-        
-        <Tabs defaultValue="categories" className="w-full">
-          <TabsList className="mb-6">
-            <TabsTrigger value="categories">Subject Performance</TabsTrigger>
-            <TabsTrigger value="priorities">Priority Distribution</TabsTrigger>
-            <TabsTrigger value="time">Time Management</TabsTrigger>
+
+        <Tabs defaultValue={activeTab} className="mb-6" onValueChange={setActiveTab}>
+          <TabsList className="mb-4">
+            <TabsTrigger value="productivity" className="flex gap-2">
+              <Trophy size={16} />
+              <span>Productivity</span>
+            </TabsTrigger>
+            <TabsTrigger value="academic" className="flex gap-2">
+              <GraduationCap size={16} />
+              <span>Academic</span>
+            </TabsTrigger>
+            <TabsTrigger value="coding" className="flex gap-2">
+              <Code size={16} />
+              <span>Coding</span>
+            </TabsTrigger>
           </TabsList>
-          
-          <TabsContent value="categories">
+
+          <TabsContent value="productivity" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Subject Performance</CardTitle>
+                <CardTitle>Weekly Task Completion</CardTitle>
+                <CardDescription>
+                  Number of tasks completed vs. total tasks by day
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={completionByDay}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar
+                        dataKey="completed"
+                        name="Completed"
+                        fill="#4ade80"
+                      />
+                      <Bar dataKey="total" name="Total" fill="#93c5fd" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Category Breakdown</CardTitle>
+                <CardDescription>
+                  Task completion by category
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
-                      data={categoryData}
-                      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                      data={categoryCompletion}
+                      layout="vertical"
                     >
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
+                      <XAxis type="number" />
+                      <YAxis dataKey="name" type="category" width={100} />
                       <Tooltip />
-                      <Bar dataKey="total" name="Total Tasks" fill="#9C89B8" />
-                      <Bar dataKey="completed" name="Completed" fill="#4CAF50" />
+                      <Legend />
+                      <Bar
+                        dataKey="completed"
+                        name="Completed"
+                        fill="#4ade80"
+                      />
+                      <Bar dataKey="total" name="Total" fill="#93c5fd" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
-          
-          <TabsContent value="priorities">
+
+          <TabsContent value="academic" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Task Priority Distribution</CardTitle>
+                <CardTitle>Weekly Study Time</CardTitle>
+                <CardDescription>
+                  Hours spent studying per week
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-80 flex justify-center">
+                <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={priorityData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={true}
-                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {priorityData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={PRIORITY_COLORS[index % PRIORITY_COLORS.length]} />
-                        ))}
-                      </Pie>
+                    <LineChart data={studyTimeData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="date" />
+                      <YAxis />
                       <Tooltip />
-                    </PieChart>
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="hours"
+                        name="Study Hours"
+                        stroke="#9f7aea"
+                        strokeWidth={2}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Subject Grades</CardTitle>
+                <CardDescription>
+                  Current grades by subject
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={gradeData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="subject" />
+                      <YAxis domain={[0, 100]} />
+                      <Tooltip />
+                      <Legend />
+                      <Bar
+                        dataKey="grade"
+                        name="Grade"
+                        fill="#f59e0b"
+                      />
+                    </BarChart>
                   </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
-          
-          <TabsContent value="time">
+
+          <TabsContent value="coding" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Time Management</CardTitle>
+                <CardTitle>LeetCode Progress</CardTitle>
+                <CardDescription>
+                  Problems solved by difficulty level
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-80 flex justify-center">
+                <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={timeManagementData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={true}
-                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {timeManagementData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={TIME_COLORS[index % TIME_COLORS.length]} />
-                        ))}
-                      </Pie>
+                    <BarChart data={leetcodeProgressData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
                       <Tooltip />
-                    </PieChart>
+                      <Legend />
+                      <Bar
+                        dataKey="easy"
+                        name="Easy"
+                        stackId="a"
+                        fill="#93c5fd"
+                      />
+                      <Bar
+                        dataKey="medium"
+                        name="Medium"
+                        stackId="a"
+                        fill="#fbbf24"
+                      />
+                      <Bar
+                        dataKey="hard"
+                        name="Hard"
+                        stackId="a"
+                        fill="#f87171"
+                      />
+                    </BarChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="mt-4 text-center">
-                  <p className="text-sm text-gray-500">
-                    {onTimeTasks > lateTasks ? (
-                      "Great job with your time management! Most of your tasks are completed on time."
-                    ) : (
-                      "Try to improve your time management. Many tasks are completed late."
-                    )}
-                  </p>
-                </div>
               </CardContent>
+              <CardFooter>
+                <Button variant="outline">View Detailed Progress</Button>
+              </CardFooter>
             </Card>
           </TabsContent>
         </Tabs>
-        
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>Performance Insights</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <InsightItem 
-                title="Time Management" 
-                rating={calculateRating(onTimeTasks, completedTasks.length, 0.7)}
-                suggestion="Try setting earlier personal deadlines to improve on-time completion."
-              />
-              <InsightItem 
-                title="Task Completion" 
-                rating={calculateRating(completedTasks.length, totalTasks, 0.6)}
-                suggestion="Focus on breaking down larger tasks into smaller, manageable chunks."
-              />
-              <InsightItem 
-                title="Priority Focus" 
-                rating={calculateRating(
-                  completedTasks.filter(t => t.priority === 'high').length,
-                  tasks.filter(t => t.priority === 'high').length,
-                  0.8
-                )}
-                suggestion="Make sure to tackle high-priority tasks first before moving to lower priorities."
-              />
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </MainLayout>
-  );
-};
-
-// Helper function to calculate ratings based on completion ratios
-function calculateRating(completed: number, total: number, threshold: number): number {
-  if (total === 0) return 3;
-  const ratio = completed / total;
-  if (ratio >= threshold) return 5;
-  if (ratio >= threshold - 0.2) return 4;
-  if (ratio >= threshold - 0.4) return 3;
-  if (ratio >= threshold - 0.6) return 2;
-  return 1;
-}
-
-// Stat Card Component
-const StatCard = ({ title, value, description, color }: { 
-  title: string; 
-  value: string; 
-  description: string; 
-  color: string;
-}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.4 }}
-    className="garden-card overflow-hidden"
-  >
-    <div className={`h-2 ${color} w-full -mt-5 mb-3`}></div>
-    <h3 className="text-lg font-medium text-gray-700">{title}</h3>
-    <p className="text-3xl font-bold mt-2">{value}</p>
-    <p className="text-sm text-gray-500 mt-1">{description}</p>
-  </motion.div>
-);
-
-// Insight Item Component
-const InsightItem = ({ title, rating, suggestion }: {
-  title: string;
-  rating: number;
-  suggestion: string;
-}) => {
-  const stars = Array(5).fill(0).map((_, i) => i < rating);
-  
-  return (
-    <div className="border-b pb-4 last:border-0 last:pb-0">
-      <div className="flex justify-between items-center">
-        <h4 className="font-medium">{title}</h4>
-        <div className="flex">
-          {stars.map((filled, i) => (
-            <svg 
-              key={i}
-              className={`w-5 h-5 ${filled ? "text-yellow-400" : "text-gray-300"}`}
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-          ))}
-        </div>
-      </div>
-      <p className="text-sm text-gray-600 mt-1">{suggestion}</p>
-    </div>
   );
 };
 
