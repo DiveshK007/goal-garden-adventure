@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Brain, RefreshCw, Award, Clock, Info, Check } from "lucide-react";
+import { Brain, RefreshCw, Award, Clock, Info } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
 import { useReward } from "@/contexts/RewardContext";
 import { Button } from "@/components/ui/button";
@@ -54,7 +54,6 @@ const MindfulnessBreathing = ({ onComplete }: MindfulnessBreathingProps) => {
         const newSeconds = prev + 1;
         setProgress((newSeconds / maxTime) * 100);
         
-        // Update breathing phase every 4 seconds
         if (newSeconds % 4 === 0) {
           setPhase(prevPhase => (prevPhase + 1) % 4);
         }
@@ -71,7 +70,6 @@ const MindfulnessBreathing = ({ onComplete }: MindfulnessBreathingProps) => {
     return () => clearInterval(timer);
   }, [onComplete]);
   
-  // Calculate size of breathing circle based on phase
   const size = phase === 0
     ? 'scale-100' // Breathe in
     : phase === 1
@@ -131,7 +129,6 @@ const MemoryGame = ({ onComplete }: MemoryGameProps) => {
   const [matchedPairs, setMatchedPairs] = useState<number>(0);
   const [moves, setMoves] = useState<number>(0);
   
-  // Initialize game
   useEffect(() => {
     const shuffledDeck = [...emojis, ...emojis]
       .sort(() => Math.random() - 0.5)
@@ -148,13 +145,11 @@ const MemoryGame = ({ onComplete }: MemoryGameProps) => {
     setMoves(0);
   }, []);
   
-  // Check for matches when two cards are flipped
   useEffect(() => {
     if (flippedCards.length === 2) {
       const [first, second] = flippedCards;
       
       if (cards[first].emoji === cards[second].emoji) {
-        // Cards match
         setCards(prevCards =>
           prevCards.map(card =>
             card.id === first || card.id === second
@@ -165,7 +160,6 @@ const MemoryGame = ({ onComplete }: MemoryGameProps) => {
         setMatchedPairs(prev => prev + 1);
         setFlippedCards([]);
       } else {
-        // Cards don't match, flip them back after a delay
         const timer = setTimeout(() => {
           setCards(prevCards =>
             prevCards.map(card =>
@@ -182,7 +176,6 @@ const MemoryGame = ({ onComplete }: MemoryGameProps) => {
     }
   }, [flippedCards, cards]);
   
-  // Check if game is complete
   useEffect(() => {
     if (matchedPairs === emojis.length && matchedPairs > 0) {
       toast({
@@ -194,7 +187,6 @@ const MemoryGame = ({ onComplete }: MemoryGameProps) => {
   }, [matchedPairs, moves, onComplete, toast]);
   
   const handleCardClick = (id: number) => {
-    // Ignore if card already matched or two cards already flipped
     if (
       cards[id].matched ||
       flippedCards.length === 2 ||
@@ -203,17 +195,14 @@ const MemoryGame = ({ onComplete }: MemoryGameProps) => {
       return;
     }
     
-    // Flip the card
     setCards(prevCards =>
       prevCards.map(card =>
         card.id === id ? { ...card, flipped: true } : card
       )
     );
     
-    // Add to flipped cards
     setFlippedCards(prev => [...prev, id]);
     
-    // Count moves when flipping the second card
     if (flippedCards.length === 1) {
       setMoves(prev => prev + 1);
     }
@@ -305,12 +294,10 @@ const Destress = () => {
   const [fact, setFact] = useState("");
   const [completedActivities, setCompletedActivities] = useState<string[]>([]);
   
-  // Set random fact
   useEffect(() => {
     setFact(facts[Math.floor(Math.random() * facts.length)]);
   }, []);
   
-  // Timer logic
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | undefined;
     

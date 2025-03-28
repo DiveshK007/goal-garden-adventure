@@ -84,8 +84,8 @@ const MiniGames = () => {
     // In a real app, this would navigate to the game
     console.log(`Playing game: ${gameId}`);
     
-    // For now, just add some points for "playing" the game
-    addPoints(10, `Played ${gameTitle}`);
+    // Fix: Only pass points to addPoints
+    addPoints(10);
   };
 
   return (

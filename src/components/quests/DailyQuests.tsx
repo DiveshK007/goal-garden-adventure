@@ -67,7 +67,8 @@ export const DailyQuests = () => {
   const completeQuest = (id: string) => {
     setQuests(prevQuests => prevQuests.map(quest => {
       if (quest.id === id && !quest.completed) {
-        addPoints(quest.points, `Completed quest: ${quest.title}`);
+        // Fix: Only pass the points to addPoints
+        addPoints(quest.points);
         toast({
           title: "Quest Completed!",
           description: `You earned ${quest.points} points for completing ${quest.title}.`,

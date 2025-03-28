@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
@@ -39,7 +40,8 @@ export function TaskItem({ task }: { task: Task }) {
   const handleComplete = () => {
     if (!task.completed) {
       const points = completeTask(task.id);
-      addPoints(points, `Completed: ${task.title}`);
+      // Fix: Only pass the points to addPoints
+      addPoints(points);
     }
   };
 
