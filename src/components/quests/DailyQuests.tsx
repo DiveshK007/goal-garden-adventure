@@ -67,7 +67,6 @@ export const DailyQuests = () => {
   const completeQuest = (id: string) => {
     setQuests(prevQuests => prevQuests.map(quest => {
       if (quest.id === id && !quest.completed) {
-        // Fix: Only pass the points to addPoints
         addPoints(quest.points);
         toast({
           title: "Quest Completed!",
@@ -129,7 +128,7 @@ export const DailyQuests = () => {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="h-8"
+                    className="h-8 whitespace-nowrap"
                     onClick={() => completeQuest(quest.id)}
                   >
                     Complete
