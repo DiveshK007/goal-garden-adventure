@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Brain, RefreshCw, Award, Clock, Info } from "lucide-react";
+import { Brain, RefreshCw, Award, Clock, Info, Check } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
 import { useReward } from "@/contexts/RewardContext";
 import { Button } from "@/components/ui/button";
