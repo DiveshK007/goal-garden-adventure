@@ -107,12 +107,12 @@ export const DailyQuests = () => {
               key={quest.id}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className={`flex items-center justify-between p-3 rounded-lg border ${
+              className={`flex items-start sm:items-center justify-between p-3 rounded-lg border ${
                 quest.completed ? "bg-garden-green bg-opacity-5 border-garden-green" : "bg-garden-light"
               }`}
             >
-              <div className="flex items-center gap-3">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+              <div className="flex items-start sm:items-center gap-3">
+                <div className={`mt-0.5 sm:mt-0 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
                   quest.completed ? "bg-garden-green text-white" : "border-2 border-gray-300"
                 }`}>
                   {quest.completed && <Check className="w-4 h-4" />}
@@ -122,13 +122,13 @@ export const DailyQuests = () => {
                   <p className="text-xs text-gray-500">{quest.description}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-shrink-0 ml-2">
                 <span className="text-sm font-medium">+{quest.points}</span>
                 {!quest.completed && (
                   <Button
                     size="sm"
                     variant="outline"
-                    className="h-8 whitespace-nowrap"
+                    className="h-8"
                     onClick={() => completeQuest(quest.id)}
                   >
                     Complete
