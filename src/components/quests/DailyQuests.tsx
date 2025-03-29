@@ -1,12 +1,17 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Check, Clock, Trophy } from "lucide-react";
+import { Check, Clock, Trophy, Info } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useReward } from "@/contexts/RewardContext";
 import { useToast } from "@/components/ui/use-toast";
+import { 
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 interface Quest {
   id: string;
@@ -83,7 +88,7 @@ export const DailyQuests = () => {
   const progress = (completedCount / totalQuests) * 100;
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <div className="flex justify-between items-center">
           <div>
@@ -121,8 +126,37 @@ export const DailyQuests = () => {
                   {quest.completed && <Check className="w-4 h-4" />}
                 </div>
                 <div className="min-w-0">
-                  <h3 className="font-medium truncate">{quest.title}</h3>
-                  <p className="text-xs text-gray-500 truncate">{quest.description}</p>
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <h3 className="font-medium truncate cursor-help">{quest.title}</h3>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80 p-3">
+                      <div className="flex gap-2 items-start">
+                        <Info className="h-4 w-4 text-garden-orange mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold">{quest.title}</h4>
+                          <p className="text-sm">{quest.description}</p>
+                          <p className="text-xs text-garden-green font-medium mt-2">+{quest.points} points upon completion</p>
+                        </div>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
+                  
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <p className="text-xs text-gray-500 truncate cursor-help">{quest.description}</p>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80 p-3">
+                      <div className="flex gap-2 items-start">
+                        <Info className="h-4 w-4 text-garden-orange mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold">{quest.title}</h4>
+                          <p className="text-sm">{quest.description}</p>
+                          <p className="text-xs text-garden-green font-medium mt-2">+{quest.points} points upon completion</p>
+                        </div>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
                 </div>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
