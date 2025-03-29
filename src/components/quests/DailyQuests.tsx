@@ -107,28 +107,31 @@ export const DailyQuests = () => {
               key={quest.id}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className={`flex items-start sm:items-center justify-between p-3 rounded-lg border ${
-                quest.completed ? "bg-garden-green bg-opacity-5 border-garden-green" : "bg-garden-light"
-              }`}
+              className="flex items-center justify-between p-3 rounded-lg border space-x-2"
+              style={{
+                backgroundColor: quest.completed ? "rgba(34, 197, 94, 0.05)" : "", 
+                borderColor: quest.completed ? "var(--garden-green)" : "",
+                borderWidth: "1px",
+              }}
             >
-              <div className="flex items-start sm:items-center gap-3">
-                <div className={`mt-0.5 sm:mt-0 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+              <div className="flex items-center gap-3 min-w-0">
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
                   quest.completed ? "bg-garden-green text-white" : "border-2 border-gray-300"
                 }`}>
                   {quest.completed && <Check className="w-4 h-4" />}
                 </div>
-                <div>
-                  <h3 className="font-medium">{quest.title}</h3>
-                  <p className="text-xs text-gray-500">{quest.description}</p>
+                <div className="min-w-0">
+                  <h3 className="font-medium truncate">{quest.title}</h3>
+                  <p className="text-xs text-gray-500 truncate">{quest.description}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                <span className="text-sm font-medium">+{quest.points}</span>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <span className="text-sm font-medium whitespace-nowrap">+{quest.points}</span>
                 {!quest.completed && (
                   <Button
                     size="sm"
                     variant="outline"
-                    className="h-8"
+                    className="h-8 whitespace-nowrap"
                     onClick={() => completeQuest(quest.id)}
                   >
                     Complete
