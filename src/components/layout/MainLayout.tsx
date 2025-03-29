@@ -63,7 +63,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             transition={{ duration: 0.5 }}
           >
             <span className="flex items-center text-xl font-bold text-garden-green">
-              <span className="text-2xl mr-1">🌱</span> Goal Garden
+              <span className="text-2xl mr-1">🌱</span> HORIZON
             </span>
           </motion.div>
         </div>
