@@ -16,6 +16,10 @@ import Chat from "./pages/Chat";
 import MiniGames from "./pages/MiniGames";
 import NotFound from "./pages/NotFound";
 
+// Import Game Pages
+import MemoryMatch from "./pages/games/MemoryMatch";
+import HocusFocus from "./pages/games/HocusFocus";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -33,6 +37,11 @@ const App = () => (
               <Route path="/destress" element={<Destress />} />
               <Route path="/chat" element={<Chat />} />
               <Route path="/minigames" element={<MiniGames />} />
+              
+              {/* Game Routes */}
+              <Route path="/games/memory-match" element={<MemoryMatch />} />
+              <Route path="/games/hocus-focus" element={<HocusFocus />} />
+              
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

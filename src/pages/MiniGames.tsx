@@ -2,36 +2,54 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Search, Gamepad } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useReward } from "@/contexts/RewardContext";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Game {
   id: string;
   title: string;
   description: string;
   icon: React.ReactNode;
+  path: string;
+  implemented: boolean;
   imageUrl?: string;
 }
 
 const MiniGames = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { addPoints } = useReward();
+  const { toast } = useToast();
+  const navigate = useNavigate();
   
   const games: Game[] = [
     {
       id: "hocus-focus",
       title: "Hocus Focus",
-      description: "Solve the riddle of a hidden picture",
+      description: "Find hidden differences in pictures",
       icon: <Search className="h-6 w-6" />,
+      path: "/games/hocus-focus",
+      implemented: true
+    },
+    {
+      id: "memory-match",
+      title: "Memory Match",
+      description: "Test your memory with this card matching game",
+      icon: <span className="text-xl">🃏</span>,
+      path: "/games/memory-match",
+      implemented: true
     },
     {
       id: "wordle",
       title: "Wordle",
       description: "The hit 5-letter guessing game",
       icon: <span className="text-xl font-bold">W</span>,
+      path: "/games/wordle",
+      implemented: false
     },
     {
       id: "crosswordle",
@@ -42,36 +60,40 @@ const MiniGames = () => {
           <div key={i} className="bg-black"></div>
         ))}
       </div>,
+      path: "/games/crosswordle",
+      implemented: false
     },
     {
       id: "framed",
       title: "Framed",
       description: "Guess a movie from still shots",
       icon: <span className="text-xl">🎬</span>,
+      path: "/games/framed",
+      implemented: false
     },
     {
       id: "artle",
       title: "Artle",
       description: "Guess a artist by their work",
       icon: <span className="text-xl">🎨</span>,
+      path: "/games/artle",
+      implemented: false
     },
     {
       id: "geoguessr",
       title: "Geoguessr",
       description: "Explore the world",
       icon: <span className="text-xl">🌍</span>,
+      path: "/games/geoguessr",
+      implemented: false
     },
     {
       id: "google-feud",
       title: "Google Feud",
       description: "Guess the top auto-completes",
       icon: <span className="text-xl">G</span>,
-    },
-    {
-      id: "memory-match",
-      title: "Memory Match",
-      description: "Test your memory with this card matching game",
-      icon: <span className="text-xl">🃏</span>,
+      path: "/games/google-feud",
+      implemented: false
     },
   ];
 
@@ -80,12 +102,20 @@ const MiniGames = () => {
     game.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handlePlayGame = (gameId: string, gameTitle: string) => {
-    // In a real app, this would navigate to the game
-    console.log(`Playing game: ${gameId}`);
-    
-    // Fix: Only pass points to addPoints
-    addPoints(10);
+  const handlePlayGame = (game: Game) => {
+    if (game.implemented) {
+      // Navigate to the game
+      navigate(game.path);
+      
+      // Award points for starting a game
+      addPoints(5, `Started playing ${game.title}`);
+    } else {
+      // Show a toast message for unimplemented games
+      toast({
+        title: "Coming Soon",
+        description: `${game.title} is not yet available. Check back later!`,
+      });
+    }
   };
 
   return (
@@ -131,16 +161,23 @@ const MiniGames = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.2 }}
-                  className="border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer flex items-center gap-3"
-                  onClick={() => handlePlayGame(game.id, game.title)}
+                  className={`border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer flex items-center gap-3 ${
+                    game.implemented ? "" : "opacity-70"
+                  }`}
+                  onClick={() => handlePlayGame(game)}
                 >
                   <div className="w-10 h-10 bg-garden-light rounded-md flex items-center justify-center">
                     {game.icon}
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <h3 className="font-medium">{game.title}</h3>
                     <p className="text-sm text-gray-500">{game.description}</p>
                   </div>
+                  {!game.implemented && (
+                    <div className="px-2 py-1 bg-gray-200 text-gray-600 rounded text-xs font-medium">
+                      Soon
+                    </div>
+                  )}
                 </motion.div>
               ))}
             </div>
