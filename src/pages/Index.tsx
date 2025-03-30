@@ -34,8 +34,8 @@ const TasksPage = () => {
       <div className="max-w-4xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div>
-            <h1 className="text-2xl font-bold">My Tasks</h1>
-            <p className="text-gray-500">
+            <h1 className="text-2xl font-bold dark:text-white">My Tasks</h1>
+            <p className="text-gray-500 dark:text-gray-400">
               Today is {format(today, "EEEE, MMMM d, yyyy")}
             </p>
           </div>
@@ -48,7 +48,7 @@ const TasksPage = () => {
             </SheetTrigger>
             <SheetContent>
               <SheetHeader>
-                <SheetTitle>Add New Task</SheetTitle>
+                <SheetTitle className="dark:text-white">Add New Task</SheetTitle>
               </SheetHeader>
               <div className="mt-6">
                 <AddTaskForm onClose={() => setIsAddTaskOpen(false)} />
@@ -65,12 +65,12 @@ const TasksPage = () => {
               transition={{ duration: 0.5 }}
             >
               <Tabs defaultValue="upcoming" className="w-full">
-                <TabsList className="mb-6">
-                  <TabsTrigger value="upcoming" className="flex gap-2">
+                <TabsList className="mb-6 dark:bg-gray-800">
+                  <TabsTrigger value="upcoming" className="flex gap-2 dark:data-[state=active]:bg-gray-700">
                     <Clock size={16} />
                     <span>Upcoming</span>
                   </TabsTrigger>
-                  <TabsTrigger value="all" className="flex gap-2">
+                  <TabsTrigger value="all" className="flex gap-2 dark:data-[state=active]:bg-gray-700">
                     <Calendar size={16} />
                     <span>All Tasks</span>
                   </TabsTrigger>

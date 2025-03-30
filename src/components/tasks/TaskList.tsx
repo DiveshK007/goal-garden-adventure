@@ -17,9 +17,9 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 const priorityColors = {
-  low: "bg-blue-100 text-blue-800",
-  medium: "bg-yellow-100 text-yellow-800",
-  high: "bg-red-100 text-red-800",
+  low: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
+  medium: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
+  high: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
 };
 
 const categoryIcons: Record<string, string> = {
@@ -40,7 +40,6 @@ export function TaskItem({ task }: { task: Task }) {
   const handleComplete = () => {
     if (!task.completed) {
       const points = completeTask(task.id);
-      // Fix: Only pass the points to addPoints
       addPoints(points);
     }
   };
@@ -63,11 +62,12 @@ export function TaskItem({ task }: { task: Task }) {
         exit={{ opacity: 0, scale: 0.95 }}
         transition={{ duration: 0.2 }}
         className={cn(
-          "p-4 bg-white rounded-lg border shadow-sm transition-all",
+          "p-4 bg-white dark:bg-gray-800 rounded-lg border shadow-sm transition-all",
           task.completed ? "opacity-70" : "",
-          isOverdue ? "border-red-300" : "",
-          isDueSoon ? "border-yellow-300" : "",
-          isHovered ? "shadow-md" : ""
+          isOverdue ? "border-red-300 dark:border-red-800" : "",
+          isDueSoon ? "border-yellow-300 dark:border-yellow-800" : "",
+          isHovered ? "shadow-md" : "",
+          "dark:border-gray-700"
         )}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -79,7 +79,7 @@ export function TaskItem({ task }: { task: Task }) {
               onCheckedChange={handleComplete}
               className={cn(
                 "mt-0.5",
-                task.completed ? "text-garden-green" : ""
+                task.completed ? "text-garden-green dark:text-garden-green" : ""
               )}
             />
           </div>
@@ -89,14 +89,14 @@ export function TaskItem({ task }: { task: Task }) {
               <div className="flex-1 min-w-0">
                 <h3 className={cn(
                   "font-medium text-md truncate",
-                  task.completed ? "line-through text-gray-500" : "text-gray-900"
+                  task.completed ? "line-through text-gray-500 dark:text-gray-400" : "text-gray-900 dark:text-gray-100"
                 )}>
                   {categoryIcons[task.category]} {task.title}
                 </h3>
                 
                 {task.description && (
                   <p className={cn(
-                    "text-sm text-gray-500 line-clamp-2",
+                    "text-sm text-gray-500 dark:text-gray-400 line-clamp-2",
                     task.completed ? "line-through" : ""
                   )}>
                     {task.description}
@@ -116,14 +116,14 @@ export function TaskItem({ task }: { task: Task }) {
               <div className="flex gap-4">
                 <div className="flex items-center gap-1">
                   <Clock size={14} className={cn(
-                    isOverdue ? "text-red-500" : 
-                    isDueSoon ? "text-yellow-500" : 
-                    "text-gray-400"
+                    isOverdue ? "text-red-500 dark:text-red-400" : 
+                    isDueSoon ? "text-yellow-500 dark:text-yellow-400" : 
+                    "text-gray-400 dark:text-gray-500"
                   )} />
                   <span className={cn(
-                    isOverdue ? "text-red-500 font-medium" : 
-                    isDueSoon ? "text-yellow-500 font-medium" :
-                    "text-gray-500"
+                    isOverdue ? "text-red-500 dark:text-red-400 font-medium" : 
+                    isDueSoon ? "text-yellow-500 dark:text-yellow-400 font-medium" :
+                    "text-gray-500 dark:text-gray-400"
                   )}>
                     {format(task.dueDate, "MMM d")}
                   </span>
@@ -141,7 +141,7 @@ export function TaskItem({ task }: { task: Task }) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
+                    className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 dark:text-red-400 dark:hover:text-red-300"
                     onClick={() => setConfirmDelete(true)}
                   >
                     <Trash2 size={16} />
@@ -184,7 +184,7 @@ export function TaskList({
 }) {
   return (
     <div className="space-y-4">
-      {title && <h2 className="text-xl font-semibold mb-4">{title}</h2>}
+      {title && <h2 className="text-xl font-semibold mb-4 dark:text-gray-100">{title}</h2>}
       
       {tasks.length > 0 ? (
         <div className="space-y-3">
@@ -193,8 +193,8 @@ export function TaskList({
           ))}
         </div>
       ) : (
-        <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed">
-          <p className="text-gray-500">{emptyMessage}</p>
+        <div className="text-center py-8 bg-gray-50 dark:bg-gray-800 rounded-lg border border-dashed dark:border-gray-700">
+          <p className="text-gray-500 dark:text-gray-400">{emptyMessage}</p>
         </div>
       )}
     </div>

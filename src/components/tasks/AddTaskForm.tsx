@@ -84,9 +84,9 @@ export function AddTaskForm({ onClose }: { onClose?: () => void }) {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Task Title</FormLabel>
+              <FormLabel className="dark:text-gray-200">Task Title</FormLabel>
               <FormControl>
-                <Input placeholder="Enter task title..." {...field} />
+                <Input placeholder="Enter task title..." {...field} className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -98,11 +98,11 @@ export function AddTaskForm({ onClose }: { onClose?: () => void }) {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel className="dark:text-gray-200">Description</FormLabel>
               <FormControl>
                 <Textarea 
                   placeholder="Enter task details..." 
-                  className="resize-none" 
+                  className="resize-none dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100" 
                   {...field} 
                 />
               </FormControl>
@@ -117,13 +117,13 @@ export function AddTaskForm({ onClose }: { onClose?: () => void }) {
             name="dueDate"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Due Date</FormLabel>
+                <FormLabel className="dark:text-gray-200">Due Date</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
                         variant={"outline"}
-                        className={`w-full pl-3 text-left font-normal ${
+                        className={`w-full pl-3 text-left font-normal dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 ${
                           !field.value ? "text-muted-foreground" : ""
                         }`}
                       >
@@ -145,6 +145,7 @@ export function AddTaskForm({ onClose }: { onClose?: () => void }) {
                         date < new Date(new Date().setHours(0, 0, 0, 0))
                       }
                       initialFocus
+                      className="dark:bg-gray-800 dark:text-gray-100"
                     />
                   </PopoverContent>
                 </Popover>
@@ -158,13 +159,13 @@ export function AddTaskForm({ onClose }: { onClose?: () => void }) {
             name="priority"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Priority</FormLabel>
+                <FormLabel className="dark:text-gray-200">Priority</FormLabel>
                 <Select 
                   onValueChange={field.onChange} 
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
                       <SelectValue placeholder="Select priority" />
                     </SelectTrigger>
                   </FormControl>
@@ -186,13 +187,13 @@ export function AddTaskForm({ onClose }: { onClose?: () => void }) {
             name="category"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Category</FormLabel>
+                <FormLabel className="dark:text-gray-200">Category</FormLabel>
                 <Select 
                   onValueChange={field.onChange} 
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                   </FormControl>
@@ -215,7 +216,7 @@ export function AddTaskForm({ onClose }: { onClose?: () => void }) {
             name="points"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Points</FormLabel>
+                <FormLabel className="dark:text-gray-200">Points</FormLabel>
                 <FormControl>
                   <Input 
                     type="number" 
@@ -223,9 +224,10 @@ export function AddTaskForm({ onClose }: { onClose?: () => void }) {
                     max={100}
                     onChange={e => field.onChange(parseInt(e.target.value))}
                     value={field.value}
+                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                   />
                 </FormControl>
-                <FormDescription>
+                <FormDescription className="dark:text-gray-400">
                   Points you'll earn for completion (5-100)
                 </FormDescription>
                 <FormMessage />
@@ -236,7 +238,7 @@ export function AddTaskForm({ onClose }: { onClose?: () => void }) {
         
         <div className="flex justify-end space-x-4">
           {onClose && (
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={onClose} className="dark:border-gray-700">
               Cancel
             </Button>
           )}
