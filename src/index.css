@@ -37,13 +37,13 @@
   }
 
   .dark {
-    --background: 20 14.3% 4.1%;
+    --background: 240 10% 3.9%;
     --foreground: 60 9.1% 97.8%;
 
-    --card: 20 14.3% 4.1%;
+    --card: 240 10% 3.9%;
     --card-foreground: 60 9.1% 97.8%;
 
-    --popover: 20 14.3% 4.1%;
+    --popover: 240 10% 3.9%;
     --popover-foreground: 60 9.1% 97.8%;
 
     --primary: 120 39% 49%;
@@ -73,20 +73,24 @@
   }
 
   body {
-    @apply bg-garden-cream text-garden-dark font-sans;
+    @apply bg-garden-cream dark:bg-gray-900 text-garden-dark dark:text-gray-100 font-sans;
   }
 }
 
 @layer utilities {
   .garden-card {
-    @apply bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow duration-300;
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow duration-300;
   }
   
   .plant-progress {
-    @apply relative overflow-hidden rounded-b-lg bg-garden-light;
+    @apply relative overflow-hidden rounded-b-lg bg-garden-light dark:bg-gray-700;
   }
   
   .plant-progress-bar {
-    @apply absolute bottom-0 left-0 w-full bg-garden-green animate-grow-up transition-all duration-300 ease-out;
+    @apply absolute bottom-0 left-0 w-full bg-garden-green dark:bg-garden-purple animate-grow-up transition-all duration-300 ease-out;
+  }
+
+  .dark-transition {
+    @apply transition-colors duration-200;
   }
 }

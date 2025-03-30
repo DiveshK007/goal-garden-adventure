@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Search, Gamepad } from "lucide-react";
@@ -48,35 +49,35 @@ const MiniGames = () => {
       description: "The hit 5-letter guessing game",
       icon: <span className="text-xl font-bold">W</span>,
       path: "/games/wordle",
-      implemented: false
+      implemented: true
     },
     {
       id: "crosswordle",
       title: "Crosswordle",
-      description: "Fill in a word Wordle game",
+      description: "Fill in a word puzzle game",
       icon: <div className="grid grid-cols-2 grid-rows-2 gap-0.5 w-5 h-5">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="bg-black"></div>
+          <div key={i} className="bg-black dark:bg-white"></div>
         ))}
       </div>,
       path: "/games/crosswordle",
-      implemented: false
+      implemented: true
     },
     {
       id: "framed",
       title: "Framed",
-      description: "Guess a movie from still shots",
+      description: "Guess a movie from descriptions",
       icon: <span className="text-xl">🎬</span>,
       path: "/games/framed",
-      implemented: false
+      implemented: true
     },
     {
       id: "artle",
       title: "Artle",
-      description: "Guess a artist by their work",
+      description: "Guess an artist by their work",
       icon: <span className="text-xl">🎨</span>,
       path: "/games/artle",
-      implemented: false
+      implemented: true
     },
     {
       id: "geoguessr",
@@ -125,7 +126,7 @@ const MiniGames = () => {
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Gamepad className="text-garden-purple" /> Mini Games
           </h1>
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400">
             Take a break and enjoy these brain games to refresh your mind
           </p>
         </motion.div>
@@ -156,20 +157,20 @@ const MiniGames = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.2 }}
-                  className={`border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer flex items-center gap-3 ${
+                  className={`border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer flex items-center gap-3 dark:border-gray-700 ${
                     game.implemented ? "" : "opacity-70"
                   }`}
                   onClick={() => handlePlayGame(game)}
                 >
-                  <div className="w-10 h-10 bg-garden-light rounded-md flex items-center justify-center">
+                  <div className="w-10 h-10 bg-garden-light rounded-md flex items-center justify-center dark:bg-gray-700">
                     {game.icon}
                   </div>
                   <div className="flex-1">
                     <h3 className="font-medium">{game.title}</h3>
-                    <p className="text-sm text-gray-500">{game.description}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{game.description}</p>
                   </div>
                   {!game.implemented && (
-                    <div className="px-2 py-1 bg-gray-200 text-gray-600 rounded text-xs font-medium">
+                    <div className="px-2 py-1 bg-gray-200 text-gray-600 rounded text-xs font-medium dark:bg-gray-700 dark:text-gray-300">
                       Soon
                     </div>
                   )}
@@ -193,23 +194,23 @@ const MiniGames = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="p-4 bg-garden-light rounded-lg">
+              <div className="p-4 bg-garden-light rounded-lg dark:bg-gray-800">
                 <h3 className="font-medium mb-2">Improved Focus</h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Games that require concentration help train your brain to maintain focus for longer periods.
                 </p>
               </div>
               
-              <div className="p-4 bg-garden-light rounded-lg">
+              <div className="p-4 bg-garden-light rounded-lg dark:bg-gray-800">
                 <h3 className="font-medium mb-2">Enhanced Memory</h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Memory games strengthen neural connections and improve recall abilities.
                 </p>
               </div>
               
-              <div className="p-4 bg-garden-light rounded-lg">
+              <div className="p-4 bg-garden-light rounded-lg dark:bg-gray-800">
                 <h3 className="font-medium mb-2">Problem Solving</h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Puzzles and strategy games develop critical thinking and problem-solving skills.
                 </p>
               </div>

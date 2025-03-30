@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { TaskProvider } from "./contexts/TaskContext";
 import { RewardProvider } from "./contexts/RewardContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 // Import Pages
 import Index from "./pages/Index";
@@ -19,35 +20,45 @@ import NotFound from "./pages/NotFound";
 // Import Game Pages
 import MemoryMatch from "./pages/games/MemoryMatch";
 import HocusFocus from "./pages/games/HocusFocus";
+import Wordle from "./pages/games/Wordle";
+import Crosswordle from "./pages/games/Crosswordle";
+import Framed from "./pages/games/Framed";
+import Artle from "./pages/games/Artle";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <TaskProvider>
-        <RewardProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/rewards" element={<Rewards />} />
-              <Route path="/destress" element={<Destress />} />
-              <Route path="/chat" element={<Chat />} />
-              <Route path="/minigames" element={<MiniGames />} />
-              
-              {/* Game Routes */}
-              <Route path="/games/memory-match" element={<MemoryMatch />} />
-              <Route path="/games/hocus-focus" element={<HocusFocus />} />
-              
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </RewardProvider>
-      </TaskProvider>
-    </TooltipProvider>
+    <ThemeProvider>
+      <TooltipProvider>
+        <TaskProvider>
+          <RewardProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/rewards" element={<Rewards />} />
+                <Route path="/destress" element={<Destress />} />
+                <Route path="/chat" element={<Chat />} />
+                <Route path="/minigames" element={<MiniGames />} />
+                
+                {/* Game Routes */}
+                <Route path="/games/memory-match" element={<MemoryMatch />} />
+                <Route path="/games/hocus-focus" element={<HocusFocus />} />
+                <Route path="/games/wordle" element={<Wordle />} />
+                <Route path="/games/crosswordle" element={<Crosswordle />} />
+                <Route path="/games/framed" element={<Framed />} />
+                <Route path="/games/artle" element={<Artle />} />
+                
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </RewardProvider>
+        </TaskProvider>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
