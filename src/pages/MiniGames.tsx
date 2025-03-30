@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Search, Gamepad } from "lucide-react";
@@ -104,13 +103,9 @@ const MiniGames = () => {
 
   const handlePlayGame = (game: Game) => {
     if (game.implemented) {
-      // Navigate to the game
       navigate(game.path);
-      
-      // Award points for starting a game
-      addPoints(5, `Started playing ${game.title}`);
+      addPoints(5);
     } else {
-      // Show a toast message for unimplemented games
       toast({
         title: "Coming Soon",
         description: `${game.title} is not yet available. Check back later!`,

@@ -126,7 +126,8 @@ const HocusFocusGame = () => {
     
     const pointsEarned = Math.max(basePoints - timeDeduction - hintDeduction, 25);
     
-    addPoints(pointsEarned, "Completed Hocus Focus game");
+    // Fix here: Only pass one argument to addPoints
+    addPoints(pointsEarned);
     
     toast({
       title: "Game Complete!",

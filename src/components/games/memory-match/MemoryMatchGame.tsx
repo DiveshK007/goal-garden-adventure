@@ -75,11 +75,12 @@ const MemoryMatchGame = () => {
         description: `You found all pairs in ${moves} moves.`,
       });
       
-      addPoints(pointsEarned, "Completed Memory Match game");
+      // Fix here: Only pass one argument to addPoints
+      addPoints(pointsEarned);
       
       toast({
         title: "Points Earned!",
-        description: `You earned ${pointsEarned} points for completing the game.`,
+        description: `You earned ${pointsEarned} points.`,
       });
     }
   }, [matchedPairs, moves, emojis.length, gameCompleted, toast, addPoints]);
