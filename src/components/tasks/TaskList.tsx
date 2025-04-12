@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
-import { Check, Clock, AlertTriangle, Trash2, Edit } from "lucide-react";
+import { Check, Clock, AlertTriangle, Trash2, Edit, ChevronDown, ChevronRight } from "lucide-react";
 import { useTask, Task, Priority } from "@/contexts/TaskContext";
 import { useReward } from "@/contexts/RewardContext";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { SubTaskList } from "./SubTaskList";
 
 const priorityColors = {
   low: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
@@ -36,6 +37,8 @@ export function TaskItem({ task }: { task: Task }) {
   const { addPoints } = useReward();
   const [isHovered, setIsHovered] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [showSubtasks, setShowSubtasks] = useState(false);
+  const hasSubtasks = task.subtasks && task.subtasks.length > 0;
 
   const handleComplete = () => {
     if (!task.completed) {
@@ -53,6 +56,10 @@ export function TaskItem({ task }: { task: Task }) {
   const isDueSoon = !task.completed && !isOverdue && 
     new Date() < task.dueDate && 
     new Date(new Date().getTime() + 24 * 60 * 60 * 1000) > task.dueDate;
+
+  const subtasksCompleted = task.subtasks.filter(st => st.completed).length;
+  const subtasksTotal = task.subtasks.length;
+  const subtaskProgress = subtasksTotal > 0 ? `${subtasksCompleted}/${subtasksTotal}` : '';
 
   return (
     <>
@@ -87,12 +94,24 @@ export function TaskItem({ task }: { task: Task }) {
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-start">
               <div className="flex-1 min-w-0">
-                <h3 className={cn(
-                  "font-medium text-md truncate",
-                  task.completed ? "line-through text-gray-500 dark:text-gray-400" : "text-gray-900 dark:text-gray-100"
-                )}>
-                  {categoryIcons[task.category]} {task.title}
-                </h3>
+                <div className="flex items-center gap-1">
+                  {hasSubtasks && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-5 w-5 p-0 mr-1"
+                      onClick={() => setShowSubtasks(!showSubtasks)}
+                    >
+                      {showSubtasks ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                    </Button>
+                  )}
+                  <h3 className={cn(
+                    "font-medium text-md truncate",
+                    task.completed ? "line-through text-gray-500 dark:text-gray-400" : "text-gray-900 dark:text-gray-100"
+                  )}>
+                    {categoryIcons[task.category]} {task.title}
+                  </h3>
+                </div>
                 
                 {task.description && (
                   <p className={cn(
@@ -134,6 +153,12 @@ export function TaskItem({ task }: { task: Task }) {
                     <span className="text-garden-purple font-medium">+{task.points} pts</span>
                   </div>
                 )}
+                
+                {hasSubtasks && (
+                  <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                    <span>{subtaskProgress} subtasks</span>
+                  </div>
+                )}
               </div>
               
               {isHovered && !task.completed && (
@@ -149,6 +174,14 @@ export function TaskItem({ task }: { task: Task }) {
                 </div>
               )}
             </div>
+            
+            {showSubtasks && hasSubtasks && (
+              <SubTaskList taskId={task.id} subtasks={task.subtasks} />
+            )}
+            
+            {showSubtasks && !hasSubtasks && (
+              <SubTaskList taskId={task.id} subtasks={[]} />
+            )}
           </div>
         </div>
       </motion.div>

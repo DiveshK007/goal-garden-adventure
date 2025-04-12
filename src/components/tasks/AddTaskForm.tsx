@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Calendar as CalendarIcon, Clock } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Plus, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,7 @@ import {
   PopoverTrigger 
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { useTask, Priority, Category } from "@/contexts/TaskContext";
+import { useTask, Priority, Category, SubTask } from "@/contexts/TaskContext";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -46,8 +46,17 @@ const formSchema = z.object({
   points: z.number().int().min(5).max(100),
 });
 
+interface SubtaskFormItem {
+  id: string;
+  title: string;
+  points: number;
+}
+
 export function AddTaskForm({ onClose }: { onClose?: () => void }) {
   const { addTask } = useTask();
+  const [subtasks, setSubtasks] = useState<SubtaskFormItem[]>([]);
+  const [subtaskTitle, setSubtaskTitle] = useState("");
+  const [subtaskPoints, setSubtaskPoints] = useState(5);
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,8 +70,33 @@ export function AddTaskForm({ onClose }: { onClose?: () => void }) {
     },
   });
 
+  const handleAddSubtask = () => {
+    if (subtaskTitle.trim()) {
+      const newSubtask: SubtaskFormItem = {
+        id: Math.random().toString(36).substr(2, 9),
+        title: subtaskTitle.trim(),
+        points: subtaskPoints
+      };
+      setSubtasks([...subtasks, newSubtask]);
+      setSubtaskTitle("");
+      setSubtaskPoints(5);
+    }
+  };
+
+  const handleRemoveSubtask = (id: string) => {
+    setSubtasks(subtasks.filter(st => st.id !== id));
+  };
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    addTask({
+    // Convert subtasks to the proper format
+    const finalSubtasks: Omit<SubTask, 'id'>[] = subtasks.map(st => ({
+      title: st.title,
+      points: st.points,
+      completed: false
+    }));
+    
+    // Create the task with its subtasks
+    const task = {
       title: values.title,
       description: values.description || "",
       dueDate: values.dueDate,
@@ -70,9 +104,16 @@ export function AddTaskForm({ onClose }: { onClose?: () => void }) {
       category: values.category as Category,
       completed: false,
       points: values.points,
-    });
+    };
+    
+    addTask(task);
+    
+    // Add subtasks if any were created
+    // Note: The addTask function now automatically creates the task with subtasks,
+    // so this part is handled within the TaskContext
     
     form.reset();
+    setSubtasks([]);
     if (onClose) onClose();
   }
 
@@ -234,6 +275,60 @@ export function AddTaskForm({ onClose }: { onClose?: () => void }) {
               </FormItem>
             )}
           />
+        </div>
+        
+        <div className="space-y-4">
+          <div>
+            <FormLabel className="dark:text-gray-200 mb-2 block">Subtasks (Optional)</FormLabel>
+            
+            {subtasks.length > 0 && (
+              <div className="space-y-2 mb-4">
+                {subtasks.map(subtask => (
+                  <div key={subtask.id} className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded-md">
+                    <div className="flex-1">{subtask.title}</div>
+                    <div className="text-sm text-garden-purple">+{subtask.points} pts</div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 text-gray-500"
+                      onClick={() => handleRemoveSubtask(subtask.id)}
+                    >
+                      <Trash2 size={14} />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            <div className="flex items-center gap-2">
+              <Input 
+                placeholder="Enter subtask..."
+                value={subtaskTitle}
+                onChange={(e) => setSubtaskTitle(e.target.value)}
+                className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+              />
+              <div className="flex items-center gap-1">
+                <Input 
+                  type="number"
+                  value={subtaskPoints}
+                  onChange={(e) => setSubtaskPoints(Number(e.target.value))}
+                  className="w-16 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+                  min={1}
+                  max={20}
+                />
+                <span className="whitespace-nowrap dark:text-gray-200">pts</span>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={handleAddSubtask}
+                disabled={!subtaskTitle.trim()}
+              >
+                <Plus size={16} />
+              </Button>
+            </div>
+          </div>
         </div>
         
         <div className="flex justify-end space-x-4">

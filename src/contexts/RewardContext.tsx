@@ -23,8 +23,8 @@ interface RewardContextType {
   points: number;
   rewards: Reward[];
   pointBalance: number;
-  addPoints: (amount: number) => void;
-  subtractPoints: (amount: number) => void;
+  addPoints: (amount: number, reason?: string) => void;
+  subtractPoints: (amount: number, reason?: string) => void;
   redeemReward: (rewardId: string) => void;
   addReward: (reward: Omit<Reward, 'id' | 'redeemed'>) => void;
   getPointHistory: () => PointTransaction[];
@@ -112,14 +112,14 @@ export const RewardProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     localStorage.setItem('pointHistory', JSON.stringify(pointHistory));
   }, [pointHistory]);
 
-  const addPoints = (amount: number) => {
+  const addPoints = (amount: number, reason = 'Points earned') => {
     setPoints(prev => prev + amount);
     
     // Add to point history
     const transaction: PointTransaction = {
       amount,
       date: new Date().toISOString(),
-      reason: 'Points earned'
+      reason
     };
     setPointHistory(prev => [transaction, ...prev]);
     
@@ -129,7 +129,7 @@ export const RewardProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     });
   };
 
-  const subtractPoints = (amount: number) => {
+  const subtractPoints = (amount: number, reason = 'Points spent') => {
     setPoints(prev => {
       if (prev < amount) {
         toast({
@@ -144,7 +144,7 @@ export const RewardProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const transaction: PointTransaction = {
         amount: -amount,
         date: new Date().toISOString(),
-        reason: 'Points spent'
+        reason
       };
       setPointHistory(prev => [transaction, ...prev]);
       
