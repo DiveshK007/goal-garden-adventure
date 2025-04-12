@@ -48,6 +48,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     { to: "/destress", icon: <Brain size={20} />, label: "Destress" },
     { to: "/minigames", icon: <Gamepad size={20} />, label: "Mini Games" },
     { to: "/chat", icon: <User size={20} />, label: "AI Buddy" },
+    { to: "/profile", icon: <User size={20} />, label: "Profile" },
   ];
 
   const toggleMobileMenu = () => {

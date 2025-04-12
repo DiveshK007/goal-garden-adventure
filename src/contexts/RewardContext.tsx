@@ -2,192 +2,73 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useToast } from "@/components/ui/use-toast";
 
-export interface Reward {
-  id: string;
-  title: string;
-  description: string;
-  cost: number;
-  category: 'academic' | 'fun' | 'self-care' | 'other';
-  redeemed: boolean;
-}
-
 interface RewardContextType {
-  rewards: Reward[];
-  pointBalance: number;
-  addReward: (reward: Omit<Reward, 'id' | 'redeemed'>) => void;
-  redeemReward: (id: string) => boolean;
-  addPoints: (points: number) => void;
-  getPointHistory: () => { date: Date; amount: number; reason: string }[];
+  points: number;
+  addPoints: (amount: number) => void;
+  subtractPoints: (amount: number) => void;
 }
-
-type PointTransaction = {
-  date: Date;
-  amount: number;
-  reason: string;
-};
 
 const RewardContext = createContext<RewardContextType | undefined>(undefined);
 
-// Sample initial rewards
-const initialRewards: Reward[] = [
-  {
-    id: '1',
-    title: '30 minutes of extra screen time',
-    description: 'Redeem for 30 minutes of screen time beyond your usual limit',
-    cost: 50,
-    category: 'fun',
-    redeemed: false
-  },
-  {
-    id: '2',
-    title: 'Special snack',
-    description: 'Redeem for a special snack of your choice',
-    cost: 75,
-    category: 'self-care',
-    redeemed: false
-  },
-  {
-    id: '3',
-    title: 'Study break',
-    description: 'Take a 15-minute break during study time without affecting your schedule',
-    cost: 30,
-    category: 'academic',
-    redeemed: false
-  }
-];
-
 export const RewardProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [rewards, setRewards] = useState<Reward[]>(initialRewards);
-  const [pointBalance, setPointBalance] = useState<number>(120);
-  const [pointHistory, setPointHistory] = useState<PointTransaction[]>([
-    { date: new Date(Date.now() - 86400000 * 2), amount: 30, reason: 'Completed Math Homework' },
-    { date: new Date(Date.now() - 86400000), amount: 50, reason: 'Completed Science Project' },
-    { date: new Date(), amount: 40, reason: 'Finished Reading Assignment' }
-  ]);
+  const [points, setPoints] = useState<number>(0);
   const { toast } = useToast();
 
-  // Load data from localStorage
+  // Load points from localStorage on mount
   useEffect(() => {
-    const savedRewards = localStorage.getItem('rewards');
-    const savedPoints = localStorage.getItem('pointBalance');
-    const savedHistory = localStorage.getItem('pointHistory');
-
-    if (savedRewards) {
-      try {
-        setRewards(JSON.parse(savedRewards));
-      } catch (e) {
-        console.error('Failed to parse rewards', e);
-      }
-    }
-
+    const savedPoints = localStorage.getItem('userPoints');
     if (savedPoints) {
       try {
-        setPointBalance(JSON.parse(savedPoints));
+        setPoints(JSON.parse(savedPoints));
       } catch (e) {
-        console.error('Failed to parse point balance', e);
+        console.error('Failed to parse points from localStorage', e);
+        setPoints(0);
       }
-    }
-
-    if (savedHistory) {
-      try {
-        const parsedHistory = JSON.parse(savedHistory);
-        // Convert string dates back to Date objects
-        const historyWithDates = parsedHistory.map((item: any) => ({
-          ...item,
-          date: new Date(item.date)
-        }));
-        setPointHistory(historyWithDates);
-      } catch (e) {
-        console.error('Failed to parse point history', e);
-      }
+    } else {
+      // Set initial points for demo
+      setPoints(120);
     }
   }, []);
 
-  // Save data to localStorage when it changes
+  // Save points to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('rewards', JSON.stringify(rewards));
-  }, [rewards]);
+    localStorage.setItem('userPoints', JSON.stringify(points));
+  }, [points]);
 
-  useEffect(() => {
-    localStorage.setItem('pointBalance', JSON.stringify(pointBalance));
-  }, [pointBalance]);
-
-  useEffect(() => {
-    localStorage.setItem('pointHistory', JSON.stringify(pointHistory));
-  }, [pointHistory]);
-
-  const addReward = (reward: Omit<Reward, 'id' | 'redeemed'>) => {
-    const newReward = {
-      ...reward,
-      id: Math.random().toString(36).substr(2, 9),
-      redeemed: false
-    };
-    setRewards([...rewards, newReward]);
+  const addPoints = (amount: number) => {
+    setPoints(prev => prev + amount);
     toast({
-      title: "Reward Added",
-      description: `"${reward.title}" has been added to your rewards.`,
+      title: "Points Added",
+      description: `You earned ${amount} points!`,
     });
   };
 
-  const redeemReward = (id: string): boolean => {
-    const reward = rewards.find(r => r.id === id);
-    
-    if (!reward || reward.redeemed) return false;
-    if (pointBalance < reward.cost) {
+  const subtractPoints = (amount: number) => {
+    setPoints(prev => {
+      if (prev < amount) {
+        toast({
+          title: "Not Enough Points",
+          description: `You need ${amount} points but only have ${prev}.`,
+          variant: "destructive",
+        });
+        return prev;
+      }
+      
       toast({
-        title: "Insufficient Points",
-        description: `You need ${reward.cost - pointBalance} more points to redeem this reward.`,
-        variant: "destructive"
+        title: "Points Spent",
+        description: `You spent ${amount} points.`,
       });
-      return false;
-    }
-
-    setPointBalance(prev => prev - reward.cost);
-    setRewards(rewards.map(r => r.id === id ? { ...r, redeemed: true } : r));
-    
-    setPointHistory([
-      ...pointHistory,
-      {
-        date: new Date(),
-        amount: -reward.cost,
-        reason: `Redeemed: ${reward.title}`
-      }
-    ]);
-
-    toast({
-      title: "Reward Redeemed",
-      description: `You have successfully redeemed "${reward.title}"!`,
+      
+      return prev - amount;
     });
-    
-    return true;
-  };
-
-  const addPoints = (points: number, reason: string = "Completed task") => {
-    setPointBalance(prev => prev + points);
-    
-    setPointHistory([
-      ...pointHistory,
-      {
-        date: new Date(),
-        amount: points,
-        reason
-      }
-    ]);
-  };
-
-  const getPointHistory = () => {
-    return pointHistory.sort((a, b) => b.date.getTime() - a.date.getTime());
   };
 
   return (
     <RewardContext.Provider
       value={{
-        rewards,
-        pointBalance,
-        addReward,
-        redeemReward,
+        points,
         addPoints,
-        getPointHistory
+        subtractPoints,
       }}
     >
       {children}

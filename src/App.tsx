@@ -15,6 +15,7 @@ import Rewards from "./pages/Rewards";
 import Destress from "./pages/Destress";
 import Chat from "./pages/Chat";
 import MiniGames from "./pages/MiniGames";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 // Import Game Pages
@@ -43,6 +44,7 @@ const App = () => (
                 <Route path="/destress" element={<Destress />} />
                 <Route path="/chat" element={<Chat />} />
                 <Route path="/minigames" element={<MiniGames />} />
+                <Route path="/profile" element={<Profile />} />
                 
                 {/* Game Routes */}
                 <Route path="/games/memory-match" element={<MemoryMatch />} />
