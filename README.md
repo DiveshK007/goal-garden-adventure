@@ -1,4 +1,6 @@
-# Goal Garden � Minimal Habit & Goal Tracker
+﻿![CI](https://github.com/DiveshK007/goal-garden-adventure/actions/workflows/ci.yml/badge.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+# Goal Garden — Minimal Habit & Goal Tracker
 **One-liner:** A distraction-free, streak-based habit/goal tracker with playful UX.
 ## ? Features
 - Daily/weekly goals with streaks
@@ -11,3 +13,4 @@ cd goal-garden-adventure && npm ci && npm run dev
 \\\
 ## ?? License
 MIT
+
