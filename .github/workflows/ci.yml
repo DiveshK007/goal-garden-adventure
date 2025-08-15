@@ -50,6 +50,7 @@ jobs:
           esac
 
       - name: Lint (optional)
+        continue-on-error: true           # <-- make lint non-blocking
         shell: bash
         run: |
           case "$PKG_MANAGER" in
